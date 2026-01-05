@@ -3,17 +3,21 @@ import os
 import base64
 
 def set_common_style(bg_image_name):
+    # 1. パス計算
     current_dir = os.path.dirname(os.path.abspath(__file__))
     bg_path = os.path.join(current_dir, bg_image_name)
 
+    # 2. 背景画像の設定
     bg_css = ""
     if os.path.exists(bg_path):
         with open(bg_path, "rb") as f:
             bin_str = base64.b64encode(f.read()).decode()
         bg_css = f'background-image: url("data:image/png;base64,{bin_str}"); background-size: cover; background-position: center; background-attachment: fixed;'
 
+    # 3. 共通デザインの定義
     st.markdown(f'''
         <style>
+        /* 画面全体 */
         .stApp {{ {bg_css} }}
 
         /* 🌸 ホーム画面：後光文字 */
@@ -34,7 +38,7 @@ def set_common_style(bg_image_name):
             background: none !important;
         }}
 
-        /* 🌸 サイドバー：磨りガラス風 */
+        /* 🌸 サイドバー本体：磨りガラス風 */
         [data-testid="stSidebar"] {{
             background-color: rgba(255, 255, 255, 0.45) !important;
             backdrop-filter: blur(20px);
@@ -42,21 +46,33 @@ def set_common_style(bg_image_name):
             width: 300px !important;
         }}
 
-        /* 🌸 サイドバーの看板デザイン（よりお守りらしく！） */
+        /* 🌸 サイドバーの看板：一番上に固定 */
         .sidebar-title {{
             font-family: 'Hiragino Maru Gothic ProN', sans-serif;
             color: #2C3E50;
             font-size: 1.4rem;
             font-weight: bold;
             text-align: center;
-            padding: 20px 10px;
-            /* 上下に薄い光の線を引く */
-            border-top: 1px solid rgba(255, 255, 255, 0.5);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-            margin-bottom: 20px;
+            
+            /* 一番上に固定するための設定 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px; /* サイドバーの幅に合わせる */
+            z-index: 999;
+            
+            padding: 40px 10px 20px 10px; /* 上を少し空けてバランスを整える */
+            background-color: rgba(255, 255, 255, 0.2); /* 看板の下を少しだけ色付け */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             text-shadow: 1px 1px 10px white;
         }}
 
+        /* 🌸 メニューが看板と重ならないように下に押し下げる */
+        [data-testid="stSidebarNav"] {{
+            padding-top: 110px !important;
+        }}
+
+        /* サイドバーのメニュー項目 */
         [data-testid="stSidebarNav"] li {{
             background-color: rgba(255, 255, 255, 0.25);
             margin: 10px 15px;
@@ -69,6 +85,7 @@ def set_common_style(bg_image_name):
             transform: translateX(5px);
         }}
 
+        /* 白い座布団 */
         .white-box {{
             background-color: rgba(255, 255, 255, 0.9);
             padding: 40px;
@@ -78,6 +95,7 @@ def set_common_style(bg_image_name):
             margin-bottom: 30px;
         }}
 
+        /* 入力欄の角 */
         .stTextInput>div>div>input, .stSelectbox>div>div {{
             border-radius: 15px !important;
         }}
